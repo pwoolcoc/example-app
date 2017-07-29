@@ -15,7 +15,7 @@ serde = "*"
 serde_derive = "*"
 fern = "*"
 log = "*"
-chrono = "*"
+chrono = "0.3"
 
 [lib]
 name = "todo_session_lib"

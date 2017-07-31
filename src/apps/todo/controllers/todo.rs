@@ -45,7 +45,7 @@ pub fn add(mut state: State, req: Request) -> (State, Response) {
 
 pub fn reset(mut state: State, _req: Request) -> (State, Response) {
     let session = SessionData::<Session>::take_from(&mut state);
-    session.discard().unwrap();
+    session.discard(&mut state).unwrap();
 
     let mut response = Response::new().with_status(StatusCode::SeeOther);
     response.headers_mut().set(Location::new("/"));

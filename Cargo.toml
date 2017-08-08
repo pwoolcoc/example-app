@@ -1,0 +1,26 @@
+[package]
+name = "todo-session"
+version = "0.1.0"
+authors = ["Shaun Mangelsdorf <s.mangelsdorf@gmail.com>"]
+
+[profile.release]
+lto = true
+
+[dependencies]
+gotham = { path = "../gotham" }
+gotham_derive = { path = "../gotham/gotham_derive" }
+hyper = "0.11.2"
+futures = "*"
+serde = "*"
+serde_derive = "*"
+fern = "*"
+log = "*"
+chrono = "0.3"
+
+[lib]
+name = "todo_session_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "todo_session"
+path = "src/bin.rs"

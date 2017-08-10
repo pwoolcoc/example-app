@@ -18,9 +18,11 @@ pub fn index(state: State, _req: Request) -> (State, Response) {
 
         // Gotham helper for creating responses and setting ia range of important headers
         // to meet specifications and enhance security.
-        create_response(&state,
-                        StatusCode::Ok,
-                        Some((index_body(session.todo_list.clone()), mime::TEXT_HTML)))
+        create_response(
+            &state,
+            StatusCode::Ok,
+            Some((index_body(session.todo_list.clone()), mime::TEXT_HTML)),
+        )
 
     };
 
@@ -127,9 +129,9 @@ fn ugly_form_body_parser<'a>(body: &'a str) -> HashMap<&'a str, &'a str> {
     let mut data = HashMap::new();
 
     data.extend(pairs.map(|p| {
-                              let mut iter = p.split("=");
-                              (iter.next().unwrap(), iter.next().unwrap())
-                          }));
+        let mut iter = p.split("=");
+        (iter.next().unwrap(), iter.next().unwrap())
+    }));
 
     data
 }

@@ -7,9 +7,11 @@ use gotham::state::State;
 use gotham::http::response::create_response;
 
 pub fn index(state: State, _req: Request) -> (State, Response) {
-    let res = create_response(&state,
-                              StatusCode::Ok,
-                              Some((html().into_bytes(), mime::TEXT_HTML)));
+    let res = create_response(
+        &state,
+        StatusCode::Ok,
+        Some((html().into_bytes(), mime::TEXT_HTML)),
+    );
 
     (state, res)
 }
@@ -29,5 +31,5 @@ fn html() -> String {
         </ul>
        </body>
      </html>"
-            .into()
+        .into()
 }

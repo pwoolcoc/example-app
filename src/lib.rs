@@ -46,12 +46,14 @@ fn set_logging() {
         .level_for("todo_session", log::LogLevelFilter::Error)
         .chain(std::io::stdout())
         .format(|out, message, record| {
-                    out.finish(format_args!("{}[{}][{}]{}",
-                                            chrono::UTC::now().format("[%Y-%m-%d %H:%M:%S%.9f]"),
-                                            record.target(),
-                                            record.level(),
-                                            message))
-                })
+            out.finish(format_args!(
+                "{}[{}][{}]{}",
+                chrono::UTC::now().format("[%Y-%m-%d %H:%M:%S%.9f]"),
+                record.target(),
+                record.level(),
+                message
+            ))
+        })
         .apply()
         .unwrap();
 }

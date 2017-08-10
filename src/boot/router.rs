@@ -22,17 +22,20 @@ use session::Session;
 // Please do a lot of squinting when considering Router setup in Gotham 0.1.
 //
 // In future Gotham releases we'll be focusing on streamlining this but if you look
-// carefully you'll see this actually isn't to far off what you might
-// already find in Rails/Phoenix/Django just type safe and Rust-y.
+// carefully you'll see this actually isn't too far off what you might already find in
+// Rails/Phoenix/Django, except we have to be more explicit to keep everything as
+// type-safe, idiomatic Rust.
 
-fn static_route<NH, P, C>(methods: Vec<Method>,
-                          new_handler: NH,
-                          active_pipelines: C,
-                          ps: PipelineSet<P>)
-                          -> Box<Route + Send + Sync>
-    where NH: NewHandler + 'static,
-          C: PipelineHandleChain<P> + Send + Sync + 'static,
-          P: Send + Sync + 'static
+fn static_route<NH, P, C>(
+    methods: Vec<Method>,
+    new_handler: NH,
+    active_pipelines: C,
+    ps: PipelineSet<P>,
+) -> Box<Route + Send + Sync>
+where
+    NH: NewHandler + 'static,
+    C: PipelineHandleChain<P> + Send + Sync + 'static,
+    P: Send + Sync + 'static,
 {
     // Requests must have used the specified method(s) in order for this Route to match.
     //
@@ -49,21 +52,25 @@ fn static_route<NH, P, C>(methods: Vec<Method>,
     // only the global pipeline.
     let dispatcher = DispatcherImpl::new(new_handler, active_pipelines, ps);
     let extractors: Extractors<NoopPathExtractor, NoopQueryStringExtractor> = Extractors::new();
-    let route = RouteImpl::new(matcher,
-                               Box::new(dispatcher),
-                               extractors,
-                               Delegation::Internal);
+    let route = RouteImpl::new(
+        matcher,
+        Box::new(dispatcher),
+        extractors,
+        Delegation::Internal,
+    );
     Box::new(route)
 }
 
-fn challenge_route<NH, P, C>(methods: Vec<Method>,
-                             new_handler: NH,
-                             active_pipelines: C,
-                             pipeline_set: PipelineSet<P>)
-                             -> Box<Route + Send + Sync>
-    where NH: NewHandler + 'static,
-          C: PipelineHandleChain<P> + Send + Sync + 'static,
-          P: Send + Sync + 'static
+fn challenge_route<NH, P, C>(
+    methods: Vec<Method>,
+    new_handler: NH,
+    active_pipelines: C,
+    pipeline_set: PipelineSet<P>,
+) -> Box<Route + Send + Sync>
+where
+    NH: NewHandler + 'static,
+    C: PipelineHandleChain<P> + Send + Sync + 'static,
+    P: Send + Sync + 'static,
 {
     let matcher = MethodOnlyRouteMatcher::new(methods);
     let dispatcher = DispatcherImpl::new(new_handler, active_pipelines, pipeline_set);
@@ -73,10 +80,12 @@ fn challenge_route<NH, P, C>(methods: Vec<Method>,
     // structs shown below, ready for use by Middleware and Handlers (Usually just your handler,
     // which is a function in your controller).
     let extractors: Extractors<ChallengeRequestPath, ChallengeQueryString> = Extractors::new();
-    let route = RouteImpl::new(matcher,
-                               Box::new(dispatcher),
-                               extractors,
-                               Delegation::Internal);
+    let route = RouteImpl::new(
+        matcher,
+        Box::new(dispatcher),
+        extractors,
+        Delegation::Internal,
+    );
     Box::new(route)
 }
 
@@ -102,12 +111,15 @@ pub fn router() -> Router {
     // You can also assign multiple Middleware instances to a Pipeline each will be evaluated in
     // order of definition for each Request entering the system.
     let ps_builder = new_pipeline_set();
-    let (ps_builder, global) = ps_builder
-        .add(new_pipeline()
-                 .add(NewSessionMiddleware::default()
-                          .insecure()
-                          .with_session_type::<Session>())
-                 .build());
+    let (ps_builder, global) = ps_builder.add(
+        new_pipeline()
+            .add(
+                NewSessionMiddleware::default()
+                    .insecure()
+                    .with_session_type::<Session>(),
+            )
+            .build(),
+    );
     let ps = finalize_pipeline_set(ps_builder);
 
     // Add a Route directly to the root of our `Tree` so that `Requests` for `/` are handled by
@@ -129,17 +141,21 @@ pub fn router() -> Router {
                                         (global, ()), // This signifies that the active Pipelines for this route consist only of the global pipeline
                                         ps.clone())); // All the pipelines we've created for this Router
 
-    todo.add_route(static_route(vec![Method::Post], // Use this Route for Post Requests
-                                || Ok(todo::add),
-                                (global, ()),
-                                ps.clone()));
+    todo.add_route(static_route(
+        vec![Method::Post], // Use this Route for Post Requests
+        || Ok(todo::add),
+        (global, ()),
+        ps.clone(),
+    ));
 
     // Create a Node to represent the Request path /reset and add a route to handle Post requests
     let mut reset = NodeBuilder::new("reset", SegmentType::Static);
-    reset.add_route(static_route(vec![Method::Post],
-                                 || Ok(todo::reset),
-                                 (global, ()),
-                                 ps.clone()));
+    reset.add_route(static_route(
+        vec![Method::Post],
+        || Ok(todo::reset),
+        (global, ()),
+        ps.clone(),
+    ));
 
     // Add the reset node to the todo node
     todo.add_child(reset);
@@ -153,10 +169,12 @@ pub fn router() -> Router {
     // Create a Node that matches any segment value it sees and allows the handler to process it
     // through (type safe!!) Request path extraction
     let mut name = NodeBuilder::new("name", SegmentType::Dynamic);
-    name.add_route(challenge_route(vec![Method::Get, Method::Head],
-                                   || Ok(challenge::index),
-                                   (global, ()),
-                                   ps.clone()));
+    name.add_route(challenge_route(
+        vec![Method::Get, Method::Head],
+        || Ok(challenge::index),
+        (global, ()),
+        ps.clone(),
+    ));
 
     // Add the name node to the challenge node
     challenge.add_child(name);

@@ -1,5 +1,5 @@
 [package]
-name = "todo-session"
+name = "gotham-example-app"
 version = "0.1.0"
 authors = ["Shaun Mangelsdorf <s.mangelsdorf@gmail.com>"]
 
@@ -19,9 +19,9 @@ chrono = "0.3"
 mime = "*"
 
 [lib]
-name = "todo_session_lib"
+name = "gotham_example_app_lib"
 path = "src/lib.rs"
 
 [[bin]]
-name = "todo_session"
+name = "gotham_example_app"
 path = "src/bin.rs"

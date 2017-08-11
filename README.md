@@ -23,7 +23,6 @@ The Gotham core team collaborate on the
 channel on irc.mozilla.org. Gotham specific chat and requests for help are 
 both very welcome here.
 
-Additionally the Gotham core team often hang out in 
-[#web](https://chat.mibbit.com/?server=irc.mozilla.org&channel=%23web) 
-and [#rust](https://chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust).
+Additionally the Gotham core team often hang out in
+[#rust-webdev](https://chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust-webdev) and [#rust](https://chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust).
 

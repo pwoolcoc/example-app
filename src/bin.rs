@@ -1,5 +1,5 @@
-extern crate todo_session_lib;
+extern crate gotham_example_app_lib;
 
 fn main() {
-    todo_session_lib::start()
+    gotham_example_app_lib::start()
 }
